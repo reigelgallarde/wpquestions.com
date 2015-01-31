@@ -30,7 +30,7 @@ function restrict_comments( $comments , $post_id ){
 				}elseif (!$is_private){
 						$new_comments_array[] = $comment;	
 				}
-			}elseif (!$is_private){
+			} else {
 				$new_comments_array[] = $comment;
 			}
 		}
@@ -64,8 +64,33 @@ add_action( 'comment_form_after_fields', 'additional_fields' );
 
 function additional_fields () {
 	if ( !is_user_logged_in() ) {return;}
-  echo '<p class="comment-form-phone">'.
-      '<label for="private"><input id="private" name="private" type="checkbox" value="yes"  />' . __( 'Make this comment private' ) . '</label>'.
-      '</p>';
+	echo '<p class="comment-form-private">'.
+		  '<label for="private"><input id="private" name="private" type="checkbox" value="yes"  />' . __( 'Make this comment private' ) . '</label>'.
+		  '</p>';
+	echo '<p class="comment-private-msg">ALL replies are private no matter what</p>';
 
+}
+
+add_filter( 'comment_class' , 'private_comment_class',99,3 );
+function private_comment_class( $classes, $class, $comment_id ){
+	//echo '<pre>'.$comment_id.'</pre>';
+	$is_private = is_comment_private(get_comment( $comment_id ));
+	if($is_private) {
+		//echo '<pre>'.print_r( $classes , true).'</pre>';
+		$classes[] = 'private-comment';
+	}
+	return $classes ;
+}
+add_action('wp_head','add_css_style');
+function add_css_style(){
+	?>
+	<style>
+		.comment-private-msg,.private-comment .comment-form-private {
+			display: none;
+		}
+		.private-comment .comment-private-msg{
+			display: block;
+		}
+	</style>
+	<?php
 }
