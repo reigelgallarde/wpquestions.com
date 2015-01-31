@@ -1,6 +1,13 @@
 /**
 * Make comments able to choose private or public...
 * as seen in http://wpquestions.com/question/showLoggedIn/id/10468
+*
+* TERMS: a 'comment' is a comment to post. a 'reply' is a comment to a comment..
+* scenarios:
+* 1. a comment can be public or private. checkbox is visible.
+* 2. a reply can be public or private based only on the following (no checkbox):
+*     a. if comment is private, all reply are automatic private.
+*     b. if comment is public, all reply are public.
 */
 
 function restrict_comments( $comments , $post_id ){ 
@@ -17,18 +24,17 @@ function restrict_comments( $comments , $post_id ){
 
 	foreach($comments as $comment){
 		$is_private = is_comment_private($comment);
-		if (!$is_private && !($comment->comment_parent > 0)) {$new_comments_array[] = $comment;continue;}
+		if (!$is_private ) {$new_comments_array[] = $comment;continue;}
 		
 		if( $comment->user_id == $user->ID || $post->post_author == $comment->user_id  ){
 			if($post->post_author == $comment->user_id){
 				if($comment->comment_parent > 0){
 					$parent_comm = get_comment( $comment->comment_parent );
 					if( ( $parent_comm->user_id == $user->ID ) ){
-						$new_comments_array[] = $comment;		
-
+						$new_comments_array[] = $comment;	
 					}
 				}elseif (!$is_private){
-						$new_comments_array[] = $comment;	
+					$new_comments_array[] = $comment;	
 				}
 			} else {
 				$new_comments_array[] = $comment;
@@ -43,7 +49,7 @@ add_filter( 'comments_array' , 'restrict_comments' , 10, 2 );
 
 function is_comment_private($comment) {
 	$is_private = (get_comment_meta( $comment->comment_ID, 'private', 'no' )=='yes')?true:false;
-	if ($is_private) {
+	if ($is_private && !($comment->comment_parent > 0)) {
 		return true;
 	} elseif ($comment->comment_parent > 0) {
 		return is_comment_private(get_comment( $comment->comment_parent ));
@@ -73,10 +79,8 @@ function additional_fields () {
 
 add_filter( 'comment_class' , 'private_comment_class',99,3 );
 function private_comment_class( $classes, $class, $comment_id ){
-	//echo '<pre>'.$comment_id.'</pre>';
 	$is_private = is_comment_private(get_comment( $comment_id ));
 	if($is_private) {
-		//echo '<pre>'.print_r( $classes , true).'</pre>';
 		$classes[] = 'private-comment';
 	}
 	return $classes ;
@@ -85,7 +89,7 @@ add_action('wp_head','add_css_style');
 function add_css_style(){
 	?>
 	<style>
-		.comment-private-msg,.private-comment .comment-form-private {
+		.comment-private-msg,.comment .comment-form-private {
 			display: none;
 		}
 		.private-comment .comment-private-msg{
