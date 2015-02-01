@@ -73,7 +73,8 @@ function additional_fields () {
 	echo '<p class="comment-form-private">'.
 		  '<label for="private"><input id="private" name="private" type="checkbox" value="yes"  />' . __( 'Make this comment private' ) . '</label>'.
 		  '</p>';
-	echo '<p class="comment-private-msg">ALL replies are private no matter what</p>';
+	echo '<p class="comment-private-msg">All replies to this thread are private</p>';
+	echo '<p class="comment-public-msg">All replies to this thread are public</p>';
 
 }
 
@@ -89,12 +90,16 @@ add_action('wp_head','add_css_style');
 function add_css_style(){
 	?>
 	<style>
-		.comment-private-msg,.comment .comment-form-private {
+		.comment .comment-form-private,
+		.comment-private-msg,
+		.private-comment .comment-public-msg {
 			display: none;
 		}
+		.comment-public-msg,
 		.private-comment .comment-private-msg{
 			display: block;
 		}
+		
 	</style>
 	<?php
 }
