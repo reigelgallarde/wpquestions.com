@@ -92,10 +92,10 @@ function add_css_style(){
 	<style>
 		.comment .comment-form-private,
 		.comment-private-msg,
-		.private-comment .comment-public-msg {
+		.comment-public-msg {
 			display: none;
 		}
-		.comment-public-msg,
+		.comment .comment-public-msg,
 		.private-comment .comment-private-msg{
 			display: block;
 		}
