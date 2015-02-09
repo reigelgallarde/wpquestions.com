@@ -49,7 +49,7 @@ class My_Reports extends WC_Report_Sales_By_Date {
 		$this->calculate_current_range( $current_range );
 
 		if ( $legends = $this->get_chart_legend() ) : 
-			preg_match("/<span[^>]*class=\"amount\">(.*?)<\\/span>/si", $legends[0]['title'], $match);
+			preg_match("/<span[^>]*class=\"amount\">".get_woocommerce_currency_symbol()."(.*?)<\\/span>/si", $legends[0]['title'], $match);
 			$sales = $match[1]; 
 			preg_match("/<strong>(.*?)<\\/strong>/si", $legends[2]['title'], $match);
 			$orders = $match[1];
