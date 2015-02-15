@@ -1,9 +1,9 @@
 <?php
 
 function block_user_in_comments_form($return){
-    if ( current_user_can('moderate_comments') ) { // you might need changing this line
-		global $comment, $post;
-		
+	global $comment, $post, $current_user;
+    if ( current_user_can('moderate_comments') || ($current_user->ID == $post->post_author)) { // you might need changing this line
+
 		if ($post->post_author === $comment->user_id) {return;} // don't do for post author
 		$block_users = get_post_meta($post->ID, 'block-user-comments', true );
 		$checked = ' ';
@@ -51,7 +51,7 @@ function my_comments_open( $open, $post_id ) {
 	global $current_user;
 	$block_users = get_post_meta($post_id, 'block-user-comments', true );
 	if (is_array($block_users) && !empty($block_users)) {
-		$key = array_search($current_user, $block_users);
+		$key = array_search($current_user->ID, $block_users);
 		if (isset($key)) {
 			$open = false;
 		}
@@ -60,5 +60,4 @@ function my_comments_open( $open, $post_id ) {
 	return $open;
 }
 add_filter( 'comments_open', 'my_comments_open', 10, 2 );
-
 ?>
