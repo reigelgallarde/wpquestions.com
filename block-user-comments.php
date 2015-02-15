@@ -1,4 +1,4 @@
-
+<?php
 
 function block_user_in_comments_form($return){
     if ( current_user_can('moderate_comments') ) { // you might need changing this line
@@ -60,3 +60,5 @@ function my_comments_open( $open, $post_id ) {
 	return $open;
 }
 add_filter( 'comments_open', 'my_comments_open', 10, 2 );
+
+?>
