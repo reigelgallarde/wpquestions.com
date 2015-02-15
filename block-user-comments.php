@@ -36,7 +36,7 @@ function block_user_in_comments_form($return){
 		<?php
 		$return .= $form;
 	} elseif (is_array($block_users) && !empty($block_users) && in_array($comment->user_id, $block_users)) {
-		$return . '<p>"You have been blocked - You can not leave a comment on this post" </p>';
+		$return .= '<p>"You have been blocked - You can not leave a comment on this post" </p>';
 	}
     return $return;
 }
